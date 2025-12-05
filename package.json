@@ -37,6 +37,8 @@
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.86.0",
     "@tanstack/react-query": "^5.90.11",
+    "@tanstack/react-query-devtools": "^5.90.11",
+    "mixpanel-browser": "^2.56.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.19",
