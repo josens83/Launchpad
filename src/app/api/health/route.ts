@@ -65,14 +65,8 @@ async function getDetailedHealth(): Promise<NextResponse<HealthStatus>> {
   }
 
   // 3. 외부 API 체크 (선택적)
-  checks.anthropic = await checkExternalApi(
-    'https://api.anthropic.com',
-    'Anthropic API'
-  );
-  checks.openai = await checkExternalApi(
-    'https://api.openai.com/v1',
-    'OpenAI API'
-  );
+  checks.anthropic = await checkExternalApi('https://api.anthropic.com');
+  checks.openai = await checkExternalApi('https://api.openai.com/v1');
 
   return NextResponse.json<HealthStatus>(
     {
@@ -182,10 +176,7 @@ async function checkRedis(): Promise<ServiceCheck> {
 /**
  * 외부 API 연결 체크
  */
-async function checkExternalApi(
-  url: string,
-  _name: string
-): Promise<ServiceCheck> {
+async function checkExternalApi(url: string): Promise<ServiceCheck> {
   const start = Date.now();
 
   try {

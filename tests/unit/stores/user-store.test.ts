@@ -34,9 +34,11 @@ const mockUser: User = {
   name: 'Test User',
   avatar_url: 'https://example.com/avatar.jpg',
   plan: 'free' as PlanType,
+  plan_expires_at: null,
+  language: 'en',
+  timezone: null,
   onboarding_completed: false,
   created_at: '2024-01-01T00:00:00Z',
-  updated_at: '2024-01-01T00:00:00Z',
 };
 
 describe('UserStore', () => {
@@ -108,7 +110,7 @@ describe('UserStore', () => {
       useUserStore.setState({ user: mockUser, isLoading: false });
       const { updatePlan } = useUserStore.getState();
 
-      const planTypes: PlanType[] = ['free', 'pro', 'enterprise'];
+      const planTypes: PlanType[] = ['free', 'starter', 'pro', 'team'];
 
       planTypes.forEach((plan) => {
         updatePlan(plan);
