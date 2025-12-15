@@ -191,6 +191,9 @@ export function sanitizeSearchQuery(input: string): string {
     .replace(/_/g, '\\_')
     // 특수 검색 연산자 제거
     .replace(/[+\-*"~^$]/g, ' ')
+    // 연속 공백 정리 및 trim
+    .replace(/\s+/g, ' ')
+    .trim()
     // 최대 길이 제한
     .slice(0, 200);
 }

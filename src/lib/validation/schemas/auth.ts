@@ -39,9 +39,7 @@ export const signupSchema = z.object({
   full_name: nonEmptyString
     .refine((val) => val.length >= 2, 'Name must be at least 2 characters')
     .refine((val) => val.length <= 100, 'Name must be 100 characters or less'),
-  accept_terms: z.literal(true, {
-    errorMap: () => ({ message: 'You must accept the terms and conditions' }),
-  }),
+  accept_terms: z.literal(true, { message: 'You must accept the terms and conditions' }),
   newsletter: z.boolean().default(false),
 }).refine(
   (data) => data.password === data.password_confirm,

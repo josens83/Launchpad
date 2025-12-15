@@ -45,7 +45,7 @@ export class ValidationError extends AppError {
    * Zod 에러를 ValidationError로 변환
    */
   static fromZodError(error: ZodError, customMessage?: string): ValidationError {
-    const fields: FieldError[] = error.errors.map((issue: ZodIssue) => ({
+    const fields: FieldError[] = error.issues.map((issue: ZodIssue) => ({
       field: issue.path.join('.'),
       message: issue.message,
       code: issue.code,
@@ -60,7 +60,7 @@ export class ValidationError extends AppError {
       code: 'ZOD_VALIDATION_ERROR',
       context: {
         metadata: {
-          issueCount: error.errors.length,
+          issueCount: error.issues.length,
         },
       },
     });

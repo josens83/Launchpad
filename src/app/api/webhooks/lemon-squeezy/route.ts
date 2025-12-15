@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import crypto from "crypto";
 
-// Lazy-initialize Supabase with service role for admin operations
+// Lazy initialization for build-time safety
 let supabaseAdmin: SupabaseClient | null = null;
 
 function getSupabaseAdmin(): SupabaseClient {

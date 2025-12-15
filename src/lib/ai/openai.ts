@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 
+// Lazy initialization for build-time safety
 let openaiClient: OpenAI | null = null;
 
 function getOpenAI(): OpenAI {
@@ -25,11 +26,12 @@ Text area: Leave space for text overlay if needed.`;
     quality: "hd",
   });
 
-  if (!response.data?.[0]?.url) {
+  const url = response.data?.[0]?.url;
+  if (!url) {
     throw new Error("Failed to generate thumbnail");
   }
 
-  return response.data[0].url;
+  return url;
 }
 
 export async function transcribeAudio(audioFile: File): Promise<{

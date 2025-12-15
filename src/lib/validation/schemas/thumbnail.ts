@@ -112,7 +112,7 @@ export const thumbnailUpdateSchema = z.object({
   title: optionalString(200),
   is_selected: z.boolean().optional(),
   status: z.enum(['draft', 'selected', 'archived']).optional(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 export type ThumbnailUpdateInput = z.infer<typeof thumbnailUpdateSchema>;

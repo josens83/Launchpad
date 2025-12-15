@@ -60,7 +60,7 @@ export const channelUpdateSchema = z.object({
   niche: optionalString(100),
   target_audience: optionalString(200),
   is_primary: z.boolean().optional(),
-  settings: z.record(z.unknown()).optional(),
+  settings: z.record(z.string(), z.unknown()).optional(),
 });
 
 export type ChannelUpdateInput = z.infer<typeof channelUpdateSchema>;
@@ -105,9 +105,7 @@ export type DataExportInput = z.infer<typeof dataExportSchema>;
  */
 export const accountDeleteSchema = z.object({
   password: z.string().min(1, 'Password is required for verification'),
-  confirmation: z.literal('DELETE', {
-    errorMap: () => ({ message: 'Please type DELETE to confirm' }),
-  }),
+  confirmation: z.literal('DELETE', { message: 'Please type DELETE to confirm' }),
   reason: optionalString(500),
   feedback: optionalString(1000),
 });

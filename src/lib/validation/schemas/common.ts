@@ -200,9 +200,7 @@ export function enumWithMessage<T extends string>(
   fieldName = 'Value'
 ) {
   return z.enum(values, {
-    errorMap: () => ({
-      message: `${fieldName} must be one of: ${values.join(', ')}`,
-    }),
+    message: `${fieldName} must be one of: ${values.join(', ')}`,
   });
 }
 

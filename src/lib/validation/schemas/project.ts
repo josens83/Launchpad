@@ -37,7 +37,7 @@ export const projectCreateSchema = z.object({
   target_duration: z.number().int().min(1).max(720).optional(),
   tags: tagsSchema,
   status: projectStatusSchema.default('idea'),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 export type ProjectCreateInput = z.infer<typeof projectCreateSchema>;
@@ -54,8 +54,7 @@ export const projectUpdateSchema = z.object({
   tags: tagsSchema.optional(),
   status: projectStatusSchema.optional(),
   youtube_video_id: z.string().regex(/^[\w-]{11}$/).optional().nullable(),
-  youtube_url: z.string().url().optional().nullable(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 export type ProjectUpdateInput = z.infer<typeof projectUpdateSchema>;

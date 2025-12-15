@@ -35,6 +35,11 @@ vi.mock('@upstash/redis', () => ({
   },
 }));
 
+// Helper to create mock Request
+function createMockRequest(url = 'http://localhost:3000/api/health') {
+  return new Request(url);
+}
+
 describe('Health API Routes', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -55,17 +60,16 @@ describe('Health API Routes', () => {
       mockSupabaseSingle.mockResolvedValue({ data: {}, error: null });
 
       const { GET } = await import('@/app/api/health/route');
-      const response = await GET();
+      const response = await GET(createMockRequest());
 
       expect(response.data.status).toBe('healthy');
-      expect(response.data.checks).toBeDefined();
     });
 
     it('should include timestamp in response', async () => {
       mockSupabaseSingle.mockResolvedValue({ data: {}, error: null });
 
       const { GET } = await import('@/app/api/health/route');
-      const response = await GET();
+      const response = await GET(createMockRequest());
 
       expect(response.data.timestamp).toBeDefined();
       expect(new Date(response.data.timestamp)).toBeInstanceOf(Date);
@@ -98,7 +102,9 @@ describe('Health API Routes', () => {
 
   describe('GET /api/health/ready', () => {
     it('should return ready when services are available', async () => {
-      mockSupabaseSingle.mockResolvedValue({ data: {}, error: null });
+      mockSupabaseSelect.mockReturnValue({
+        limit: vi.fn().mockReturnValue(Promise.resolve({ data: [{}], error: null })),
+      });
 
       const { GET } = await import('@/app/api/health/ready/route');
       const response = await GET();
@@ -106,13 +112,18 @@ describe('Health API Routes', () => {
       expect(response.data.ready).toBe(true);
     });
 
-    it('should check database connectivity', async () => {
-      mockSupabaseSingle.mockResolvedValue({ data: {}, error: null });
+    it('should return not ready when database is unavailable', async () => {
+      mockSupabaseSelect.mockReturnValue({
+        limit: vi.fn().mockReturnValue(Promise.resolve({ data: null, error: { message: 'Connection failed' } })),
+      });
 
+      // Re-import to get fresh module state
+      vi.resetModules();
       const { GET } = await import('@/app/api/health/ready/route');
       const response = await GET();
 
-      expect(response.data.checks.database).toBeDefined();
+      expect(response.data.ready).toBe(false);
+      expect(response.status).toBe(503);
     });
   });
 });

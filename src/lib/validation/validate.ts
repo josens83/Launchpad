@@ -135,7 +135,7 @@ export function validatePartial<T extends z.ZodRawShape>(
   schema: z.ZodObject<T>,
   data: unknown
 ): ValidationResult<Partial<z.infer<z.ZodObject<T>>>> {
-  return validate(schema.partial(), data);
+  return validate(schema.partial(), data) as ValidationResult<Partial<z.infer<z.ZodObject<T>>>>;
 }
 
 /**
@@ -208,20 +208,15 @@ export function getValidationErrors(
  */
 export function withCustomValidation<T>(
   schema: ZodSchema<T>,
-  validator: (data: T) => boolean | string | Promise<boolean | string>
+  validator: (data: T) => boolean | string | Promise<boolean | string>,
+  errorMessage = 'Validation failed'
 ): ZodSchema<T> {
   return schema.refine(
     async (data) => {
       const result = await validator(data);
       return result === true;
     },
-    (data) => {
-      // 동기적으로 다시 실행하여 에러 메시지 얻기
-      const result = validator(data) as boolean | string;
-      return {
-        message: typeof result === 'string' ? result : 'Validation failed',
-      };
-    }
+    { message: errorMessage }
   ) as ZodSchema<T>;
 }
 
@@ -234,7 +229,7 @@ export function validateEnvVars<T extends Record<string, z.ZodTypeAny>>(
   const result = schema.safeParse(process.env);
 
   if (!result.success) {
-    const missing = result.error.errors
+    const missing = result.error.issues
       .map((e) => e.path.join('.'))
       .join(', ');
     throw new Error(`Missing or invalid environment variables: ${missing}`);

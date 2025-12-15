@@ -46,7 +46,7 @@ const defaultConfig: AnalyticsConfig = {
 // Analytics state
 let config = defaultConfig;
 let currentUser: AnalyticsUser | null = null;
-let eventQueue: AnalyticsEvent[] = [];
+const eventQueue: AnalyticsEvent[] = [];
 let isInitialized = false;
 
 /**

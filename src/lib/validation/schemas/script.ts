@@ -66,7 +66,7 @@ export const scriptUpdateSchema = z.object({
   hook: optionalString(1000),
   cta: optionalString(1000),
   status: z.enum(['draft', 'review', 'final', 'archived']).optional(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 export type ScriptUpdateInput = z.infer<typeof scriptUpdateSchema>;

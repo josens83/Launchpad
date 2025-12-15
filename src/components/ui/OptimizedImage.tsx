@@ -65,14 +65,16 @@ export function OptimizedImage({
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [currentSrc, setCurrentSrc] = useState(src);
+  const [prevSrc, setPrevSrc] = useState(src);
   const imageRef = useRef<HTMLImageElement>(null);
 
-  // Reset state when src changes
-  useEffect(() => {
+  // Reset state when src changes (React recommended pattern for derived state)
+  if (src !== prevSrc) {
     setCurrentSrc(src);
     setHasError(false);
     setIsLoading(true);
-  }, [src]);
+    setPrevSrc(src);
+  }
 
   const handleLoad = useCallback(() => {
     setIsLoading(false);
