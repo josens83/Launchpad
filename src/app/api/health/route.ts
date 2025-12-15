@@ -184,7 +184,7 @@ async function checkRedis(): Promise<ServiceCheck> {
  */
 async function checkExternalApi(
   url: string,
-  name: string
+  _name: string
 ): Promise<ServiceCheck> {
   const start = Date.now();
 

@@ -12,7 +12,6 @@ import {
   acceptAll,
   acceptNecessaryOnly,
   CONSENT_CONFIG,
-  type ConsentState,
   type ConsentCategory,
 } from '@/lib/gdpr/consent';
 import { cn } from '@/lib/utils';

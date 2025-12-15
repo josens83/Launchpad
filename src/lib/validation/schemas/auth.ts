@@ -3,7 +3,7 @@
  */
 
 import { z } from 'zod';
-import { sanitizePassword, sanitizeText } from '../sanitize';
+import { sanitizePassword } from '../sanitize';
 import { emailSchema, nonEmptyString } from './common';
 
 /**

@@ -12,7 +12,6 @@ import {
   CardTitle,
   CardContent,
   Badge,
-  Input,
   Textarea,
 } from "@/components/ui";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -38,7 +37,7 @@ import {
   Check,
   Copy,
 } from "lucide-react";
-import type { Project, ProjectStatus, Script, Thumbnail, Keyword } from "@/types";
+import type { Project, ProjectStatus } from "@/types";
 import { formatRelativeTime, formatDuration } from "@/lib/utils";
 
 const statusOptions: { value: ProjectStatus; label: string }[] = [
@@ -56,7 +55,6 @@ export default function ProjectDetailPage() {
 
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
@@ -83,7 +81,6 @@ export default function ProjectDetailPage() {
   const updateProject = async (updates: Partial<Project>) => {
     if (!project) return;
 
-    setIsSaving(true);
     const supabase = createClient();
     const { error } = await supabase
       .from("projects")
@@ -93,7 +90,6 @@ export default function ProjectDetailPage() {
     if (!error) {
       setProject({ ...project, ...updates });
     }
-    setIsSaving(false);
   };
 
   const handleDelete = async () => {

@@ -6,7 +6,7 @@
  */
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { AppError, wrapError, isAppError } from '@/lib/errors';
+import { wrapError, isAppError } from '@/lib/errors';
 import { reportError } from '@/lib/errors/handler';
 
 export interface ErrorBoundaryProps {

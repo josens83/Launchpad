@@ -4,8 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useUserStore } from "@/stores";
-import { Button, Card, Input, Badge } from "@/components/ui";
-import { Progress } from "@/components/ui/progress";
+import { Button, Card, Input } from "@/components/ui";
 import {
   Youtube,
   Target,

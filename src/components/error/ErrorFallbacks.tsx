@@ -8,7 +8,7 @@ import { ReactNode } from 'react';
 import { AlertTriangle, RefreshCw, Home, HelpCircle, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { isAppError } from '@/lib/errors';
-import { getErrorMessage, getActionUrl, ErrorAction } from '@/lib/errors/messages';
+import { getErrorMessage, getActionUrl } from '@/lib/errors/messages';
 import Link from 'next/link';
 
 interface ErrorFallbackProps {

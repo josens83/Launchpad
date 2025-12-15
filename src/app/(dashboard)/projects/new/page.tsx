@@ -9,8 +9,6 @@ import {
   Input,
   Textarea,
   Card,
-  CardHeader,
-  CardTitle,
   CardContent,
 } from "@/components/ui";
 import {

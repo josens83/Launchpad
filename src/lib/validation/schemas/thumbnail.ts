@@ -3,7 +3,7 @@
  */
 
 import { z } from 'zod';
-import { sanitizeText } from '../sanitize';
+// Sanitization is handled at API layer
 import { nonEmptyString, optionalString, urlSchema } from './common';
 
 /**

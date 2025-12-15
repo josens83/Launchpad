@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { ProjectCard } from "@/components/dashboard";
-import { Button, Card, Input, Badge } from "@/components/ui";
+import { Button, Card, Input } from "@/components/ui";
 import {
   Select,
   SelectContent,

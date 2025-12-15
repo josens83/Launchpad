@@ -25,7 +25,6 @@ import {
 import {
   ArrowLeft,
   Sparkles,
-  Loader2,
   Copy,
   Check,
   RefreshCw,

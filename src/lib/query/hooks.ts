@@ -24,11 +24,12 @@ interface PaginatedResponse<T> {
   totalPages: number;
 }
 
-interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-  error?: string;
-}
+// Reserved for future API response handling
+// interface ApiResponse<T> {
+//   success: boolean;
+//   data: T;
+//   error?: string;
+// }
 
 // Fetch helper with error handling
 async function fetchApi<T>(url: string, options?: RequestInit): Promise<T> {

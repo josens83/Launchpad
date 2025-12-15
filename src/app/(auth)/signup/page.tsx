@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button, Input, Card } from "@/components/ui";
-import { Youtube, Mail, Lock, User, Loader2 } from "lucide-react";
+import { Youtube, Mail, Lock, User } from "lucide-react";
 
 export default function SignupPage() {
-  const router = useRouter();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

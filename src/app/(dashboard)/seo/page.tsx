@@ -18,12 +18,10 @@ import {
   TrendingUp,
   Copy,
   Check,
-  Loader2,
   Hash,
   FileText,
   Type,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface KeywordResult {
   keyword: string;

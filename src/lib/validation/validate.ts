@@ -118,7 +118,7 @@ export async function validateFormData<T>(
     const formData = await request.formData();
     const data = Object.fromEntries(formData.entries());
     return validate(schema, data);
-  } catch (error) {
+  } catch {
     return {
       success: false,
       error: new ValidationError('Invalid form data', [], {

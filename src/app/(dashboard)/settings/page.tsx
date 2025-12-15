@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useUserStore, useUIStore } from "@/stores";
 import {
@@ -30,10 +29,8 @@ import {
   Bell,
   Globe,
   Palette,
-  Shield,
   Check,
   Crown,
-  Loader2,
 } from "lucide-react";
 
 const languages = [
@@ -105,7 +102,6 @@ const plans = [
 ];
 
 export default function SettingsPage() {
-  const router = useRouter();
   const { user, setUser } = useUserStore();
   const { theme, setTheme } = useUIStore();
 

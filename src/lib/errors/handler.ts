@@ -87,7 +87,7 @@ function createErrorResponse(
   error: AppError,
   options: { locale: SupportedLocale; includeStack: boolean }
 ): NextResponse<ApiErrorResponse> {
-  const { locale, includeStack } = options;
+  const { locale } = options;
   const friendlyMessage = getErrorMessage(error.code, locale);
 
   const response: ApiErrorResponse = {

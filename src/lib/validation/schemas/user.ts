@@ -3,7 +3,7 @@
  */
 
 import { z } from 'zod';
-import { emailSchema, nonEmptyString, optionalString, urlSchema, languageCodeSchema } from './common';
+import { nonEmptyString, optionalString, urlSchema, languageCodeSchema } from './common';
 
 /**
  * 사용자 프로필 업데이트 스키마

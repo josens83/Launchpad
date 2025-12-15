@@ -26,13 +26,6 @@ export function StatsCard({
   status = "neutral",
   className,
 }: StatsCardProps) {
-  const statusColors = {
-    good: "text-success",
-    warning: "text-warning",
-    bad: "text-error",
-    neutral: "text-foreground-secondary",
-  };
-
   const statusIndicators = {
     good: "bg-success",
     warning: "bg-warning",

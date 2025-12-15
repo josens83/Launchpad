@@ -12,7 +12,6 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-  Badge,
 } from "@/components/ui";
 import {
   Select,
@@ -27,7 +26,6 @@ import {
   Download,
   RefreshCw,
   Check,
-  Loader2,
 } from "lucide-react";
 
 const styles = [
