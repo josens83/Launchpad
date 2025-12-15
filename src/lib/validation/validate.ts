@@ -182,7 +182,7 @@ export function validateConditional<T>(
 /**
  * 여러 스키마 중 하나로 검증
  */
-export function validateUnion<T extends readonly [ZodSchema, ...ZodSchema[]]>(
+export function validateUnion<T extends readonly [ZodSchema, ZodSchema, ...ZodSchema[]]>(
   schemas: T,
   data: unknown
 ): ValidationResult<z.infer<T[number]>> {

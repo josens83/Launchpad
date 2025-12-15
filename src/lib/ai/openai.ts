@@ -1,8 +1,15 @@
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+let openaiClient: OpenAI | null = null;
+
+function getOpenAI(): OpenAI {
+  if (!openaiClient) {
+    openaiClient = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+  }
+  return openaiClient;
+}
 
 export async function generateThumbnail(prompt: string): Promise<string> {
   const enhancedPrompt = `Create a YouTube thumbnail: ${prompt}.
@@ -10,7 +17,7 @@ Style: High contrast, bold colors, professional YouTube thumbnail aesthetic.
 Composition: Clean, uncluttered, with clear focal point.
 Text area: Leave space for text overlay if needed.`;
 
-  const response = await openai.images.generate({
+  const response = await getOpenAI().images.generate({
     model: "dall-e-3",
     prompt: enhancedPrompt,
     n: 1,
@@ -18,7 +25,7 @@ Text area: Leave space for text overlay if needed.`;
     quality: "hd",
   });
 
-  if (!response.data[0]?.url) {
+  if (!response.data?.[0]?.url) {
     throw new Error("Failed to generate thumbnail");
   }
 
@@ -29,7 +36,7 @@ export async function transcribeAudio(audioFile: File): Promise<{
   text: string;
   segments: { start: number; end: number; text: string }[];
 }> {
-  const response = await openai.audio.transcriptions.create({
+  const response = await getOpenAI().audio.transcriptions.create({
     file: audioFile,
     model: "whisper-1",
     response_format: "verbose_json",
@@ -50,7 +57,7 @@ export async function translateText(
   text: string,
   targetLanguage: string
 ): Promise<string> {
-  const response = await openai.chat.completions.create({
+  const response = await getOpenAI().chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
       {
@@ -71,7 +78,7 @@ export async function analyzeThumbnailCTR(imageUrl: string): Promise<{
   score: number;
   suggestions: string[];
 }> {
-  const response = await openai.chat.completions.create({
+  const response = await getOpenAI().chat.completions.create({
     model: "gpt-4o",
     messages: [
       {

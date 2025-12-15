@@ -86,9 +86,11 @@ export interface Project {
   id: string;
   user_id: string;
   title: string;
+  description: string | null;
   status: ProjectStatus;
   scheduled_date: string | null;
   youtube_video_id: string | null;
+  tags: string[] | null;
   created_at: string;
   updated_at: string;
   // Relations
@@ -191,10 +193,12 @@ export interface CalendarEvent {
 }
 
 // AI Generation Types
+export type ToneType = "casual" | "professional" | "educational" | "entertaining" | "inspirational" | "conversational";
+
 export interface ScriptGenerationRequest {
   topic: string;
   niche: string;
-  tone: "casual" | "professional" | "educational" | "entertaining";
+  tone: ToneType;
   target_duration: number; // in minutes
   include_hook: boolean;
   include_cta: boolean;

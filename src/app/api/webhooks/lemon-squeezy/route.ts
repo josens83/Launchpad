@@ -1,12 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import crypto from "crypto";
 
-// Initialize Supabase with service role for admin operations
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Lazy-initialize Supabase with service role for admin operations
+let supabaseAdmin: SupabaseClient | null = null;
+
+function getSupabaseAdmin(): SupabaseClient {
+  if (!supabaseAdmin) {
+    supabaseAdmin = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+  }
+  return supabaseAdmin;
+}
 
 function verifyWebhookSignature(
   payload: string,
@@ -60,7 +67,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Find user by email
-    const { data: user, error: userError } = await supabase
+    const { data: user, error: userError } = await getSupabaseAdmin()
       .from("users")
       .select("id")
       .eq("email", userEmail)
@@ -94,7 +101,7 @@ export async function POST(request: NextRequest) {
         )?.[1] || "starter";
 
         // Update or create subscription record
-        await supabase.from("subscriptions").upsert({
+        await getSupabaseAdmin().from("subscriptions").upsert({
           user_id: user.id,
           lemon_squeezy_id: data.id,
           status: status === "active" ? "active" : "cancelled",
@@ -109,7 +116,7 @@ export async function POST(request: NextRequest) {
         });
 
         // Update user plan
-        await supabase
+        await getSupabaseAdmin()
           .from("users")
           .update({
             plan: status === "active" ? planName : "free",
@@ -126,7 +133,7 @@ export async function POST(request: NextRequest) {
         const subscription = data.attributes;
 
         // Update subscription status
-        await supabase
+        await getSupabaseAdmin()
           .from("subscriptions")
           .update({
             status: "cancelled",
@@ -136,7 +143,7 @@ export async function POST(request: NextRequest) {
 
         // If immediately cancelled (not at period end), downgrade user
         if (!subscription.ends_at || new Date(subscription.ends_at) <= new Date()) {
-          await supabase
+          await getSupabaseAdmin()
             .from("users")
             .update({
               plan: "free",
@@ -150,14 +157,14 @@ export async function POST(request: NextRequest) {
 
       case "subscription_expired": {
         // Downgrade user to free plan
-        await supabase
+        await getSupabaseAdmin()
           .from("subscriptions")
           .update({
             status: "expired",
           })
           .eq("lemon_squeezy_id", data.id);
 
-        await supabase
+        await getSupabaseAdmin()
           .from("users")
           .update({
             plan: "free",

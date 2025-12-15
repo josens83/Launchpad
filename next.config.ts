@@ -1,12 +1,4 @@
 import type { NextConfig } from "next";
-import withPWAInit from "next-pwa";
-
-const withPWA = withPWAInit({
-  dest: "public",
-  disable: process.env.NODE_ENV === "development",
-  register: true,
-  skipWaiting: true,
-});
 
 // Content Security Policy
 const ContentSecurityPolicy = `
@@ -61,6 +53,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Turbopack configuration (Next.js 16+)
+  turbopack: {},
+
   // 보안 헤더 적용
   async headers() {
     return [
@@ -135,4 +130,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withPWA(nextConfig);
+export default nextConfig;

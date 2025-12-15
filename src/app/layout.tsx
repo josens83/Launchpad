@@ -1,16 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// Providers
+import { QueryProvider } from "@/components/providers/QueryProvider";
+import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
+import { CookieConsent } from "@/components/gdpr/CookieConsent";
+import { SkipLinks } from "@/components/accessibility/SkipLinks";
 
 export const metadata: Metadata = {
   title: {
@@ -82,10 +77,26 @@ export default function RootLayout({
           content="black-translucent"
         />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className="font-sans antialiased">
+        {/* Accessibility: Skip Links */}
+        <SkipLinks
+          links={[
+            { id: "main-content", label: "Skip to main content" },
+            { id: "navigation", label: "Skip to navigation" },
+          ]}
+        />
+
+        {/* React Query Provider */}
+        <QueryProvider>
+          {/* Analytics Provider */}
+          <AnalyticsProvider>
+            {/* Main Content */}
+            <main id="main-content">{children}</main>
+
+            {/* GDPR Cookie Consent Banner */}
+            <CookieConsent />
+          </AnalyticsProvider>
+        </QueryProvider>
       </body>
     </html>
   );

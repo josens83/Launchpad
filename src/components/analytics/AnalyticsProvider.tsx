@@ -44,7 +44,7 @@ function UserIdentifier() {
       identifyUser({
         id: user.id,
         email: user.email,
-        name: user.name,
+        name: user.name ?? undefined,
         plan: user.plan,
         createdAt: user.created_at,
       });

@@ -164,17 +164,16 @@ export default function ProjectDetailPage() {
           >
             <Trash2 className="h-4 w-4" />
           </Button>
-          {project.youtube_url && (
-            <Button variant="outline" asChild>
-              <a
-                href={project.youtube_url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                View on YouTube
-              </a>
-            </Button>
+          {project.youtube_video_id && (
+            <a
+              href={`https://www.youtube.com/watch?v=${project.youtube_video_id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center h-10 px-4 py-2 rounded-lg text-sm font-medium border border-border bg-transparent hover:bg-surface-hover transition-all"
+            >
+              <ExternalLink className="h-4 w-4 mr-2" />
+              View on YouTube
+            </a>
           )}
         </div>
       </div>

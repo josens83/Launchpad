@@ -15,7 +15,7 @@ export interface ErrorBoundaryProps {
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
   onReset?: () => void;
   resetKeys?: unknown[];
-  level?: 'page' | 'section' | 'component';
+  level?: 'page' | 'section' | 'component' | 'card';
 }
 
 interface ErrorBoundaryState {

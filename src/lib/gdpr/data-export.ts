@@ -166,47 +166,47 @@ export async function deleteUserData(userId: string): Promise<{
 
   // Delete scripts
   if (projectIds.length > 0) {
-    const { count: scriptCount } = await supabase
+    const { data: deletedScripts } = await supabase
       .from('scripts')
       .delete()
       .in('project_id', projectIds)
-      .select('*', { count: 'exact', head: true });
-    deletedItems.scripts = scriptCount || 0;
+      .select('id');
+    deletedItems.scripts = deletedScripts?.length || 0;
   }
 
   // Delete thumbnails
   if (projectIds.length > 0) {
-    const { count: thumbnailCount } = await supabase
+    const { data: deletedThumbnails } = await supabase
       .from('thumbnails')
       .delete()
       .in('project_id', projectIds)
-      .select('*', { count: 'exact', head: true });
-    deletedItems.thumbnails = thumbnailCount || 0;
+      .select('id');
+    deletedItems.thumbnails = deletedThumbnails?.length || 0;
   }
 
   // Delete projects
-  const { count: projectCount } = await supabase
+  const { data: deletedProjects } = await supabase
     .from('projects')
     .delete()
     .eq('user_id', userId)
-    .select('*', { count: 'exact', head: true });
-  deletedItems.projects = projectCount || 0;
+    .select('id');
+  deletedItems.projects = deletedProjects?.length || 0;
 
   // Delete usage records
-  const { count: usageCount } = await supabase
+  const { data: deletedUsage } = await supabase
     .from('usage')
     .delete()
     .eq('user_id', userId)
-    .select('*', { count: 'exact', head: true });
-  deletedItems.usage_records = usageCount || 0;
+    .select('id');
+  deletedItems.usage_records = deletedUsage?.length || 0;
 
   // Delete consent records
-  const { count: consentCount } = await supabase
+  const { data: deletedConsent } = await supabase
     .from('consent_records')
     .delete()
     .eq('user_id', userId)
-    .select('*', { count: 'exact', head: true });
-  deletedItems.consent_records = consentCount || 0;
+    .select('id');
+  deletedItems.consent_records = deletedConsent?.length || 0;
 
   // Note: User account deletion should be handled separately
   // via Supabase Auth admin functions

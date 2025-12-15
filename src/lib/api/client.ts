@@ -159,7 +159,7 @@ async function fetchWithTimeout(
     return response;
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError') {
-      throw new TimeoutError(`Request timed out after ${timeout}ms`);
+      throw new TimeoutError('fetch', timeout);
     }
     throw error;
   } finally {
@@ -230,7 +230,7 @@ export class ApiClient {
             code: `HTTP_${response.status}`,
             statusCode: response.status,
             retryable: response.status >= 500 || response.status === 429,
-            context: { url, status: response.status },
+            context: { endpoint: url, metadata: { status: response.status } },
           });
         }
 

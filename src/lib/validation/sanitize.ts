@@ -3,7 +3,7 @@
  * XSS, Injection 방어를 위한 입력 정제
  */
 
-import DOMPurify from 'dompurify';
+import DOMPurify, { type Config as DOMPurifyConfig } from 'dompurify';
 
 /**
  * HTML 태그 제거 및 텍스트 정제
@@ -24,7 +24,7 @@ export function sanitizeText(input: string): string {
 /**
  * HTML 콘텐츠 새니타이징 (허용된 태그만)
  */
-export function sanitizeHtml(input: string, options?: DOMPurify.Config): string {
+export function sanitizeHtml(input: string, options?: DOMPurifyConfig): string {
   if (typeof input !== 'string') return '';
 
   // 서버 사이드에서는 기본 정제만 수행

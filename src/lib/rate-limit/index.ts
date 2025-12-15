@@ -274,15 +274,15 @@ export async function rateLimitMiddleware(
 /**
  * API 라우트에서 Rate Limit 체크
  */
-export async function withRateLimit<T>(
+export async function withRateLimit(
   request: NextRequest,
-  handler: () => Promise<NextResponse<T>>,
+  handler: () => Promise<NextResponse>,
   options?: { plan?: string }
-): Promise<NextResponse<T>> {
+): Promise<NextResponse> {
   const rateLimitResponse = await rateLimitMiddleware(request, options?.plan);
 
   if (rateLimitResponse) {
-    return rateLimitResponse as NextResponse<T>;
+    return rateLimitResponse;
   }
 
   const response = await handler();
@@ -292,7 +292,7 @@ export async function withRateLimit<T>(
   const identifier = getClientIdentifier(request);
   const result = await checkRateLimit(identifier, endpoint, options?.plan);
 
-  return addRateLimitHeaders(response, result) as NextResponse<T>;
+  return addRateLimitHeaders(response, result);
 }
 
 /**

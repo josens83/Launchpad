@@ -20,7 +20,7 @@ import {
  */
 export function useFocusTrap<T extends HTMLElement = HTMLElement>(
   isActive: boolean = true
-): RefObject<T> {
+): RefObject<T | null> {
   const containerRef = useRef<T>(null);
 
   useEffect(() => {

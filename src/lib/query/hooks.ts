@@ -88,7 +88,7 @@ export function useProjects(
   options?: Omit<UseQueryOptions<Project[]>, 'queryKey' | 'queryFn'>
 ) {
   return useQuery({
-    queryKey: queryKeys.projects.list(filters),
+    queryKey: queryKeys.projects.list(filters as Record<string, unknown>),
     queryFn: () => {
       const params = new URLSearchParams();
       Object.entries(filters).forEach(([key, value]) => {
@@ -109,7 +109,7 @@ export function useProjectsInfinite(
   >
 ) {
   return useInfiniteQuery({
-    queryKey: [...queryKeys.projects.list(filters), 'infinite'],
+    queryKey: [...queryKeys.projects.list(filters as Record<string, unknown>), 'infinite'],
     queryFn: ({ pageParam = 1 }) => {
       const params = new URLSearchParams();
       Object.entries(filters).forEach(([key, value]) => {
@@ -163,16 +163,18 @@ export function useCreateProject(
   });
 }
 
+type UpdateProjectContext = { previousProject: Project | undefined };
+
 export function useUpdateProject(
   options?: Omit<
-    UseMutationOptions<Project, Error, { id: string; data: Partial<Project> }>,
-    'mutationFn'
+    UseMutationOptions<Project, Error, { id: string; data: Partial<Project> }, UpdateProjectContext>,
+    'mutationFn' | 'onMutate' | 'onError' | 'onSettled'
   >
 ) {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<Project> }) =>
+  return useMutation<Project, Error, { id: string; data: Partial<Project> }, UpdateProjectContext>({
+    mutationFn: ({ id, data }) =>
       fetchApi<Project>(`/api/projects/${id}`, {
         method: 'PATCH',
         body: JSON.stringify(data),

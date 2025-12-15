@@ -40,18 +40,20 @@ export function GlobalErrorFallback({ error, reset }: ErrorFallbackProps) {
               Try Again
             </Button>
           )}
-          <Button variant="outline" asChild>
-            <Link href="/" className="gap-2">
-              <Home className="h-4 w-4" />
-              Go Home
-            </Link>
-          </Button>
-          <Button variant="ghost" asChild>
-            <Link href="/help" className="gap-2">
-              <HelpCircle className="h-4 w-4" />
-              Get Help
-            </Link>
-          </Button>
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center gap-2 h-10 px-4 py-2 rounded-lg text-sm font-medium border border-border bg-transparent hover:bg-surface-hover transition-all"
+          >
+            <Home className="h-4 w-4" />
+            Go Home
+          </Link>
+          <Link
+            href="/help"
+            className="inline-flex items-center justify-center gap-2 h-10 px-4 py-2 rounded-lg text-sm font-medium hover:bg-surface-hover transition-all"
+          >
+            <HelpCircle className="h-4 w-4" />
+            Get Help
+          </Link>
         </div>
         {process.env.NODE_ENV === 'development' && (
           <div className="mt-8 rounded-lg border border-red-200 bg-red-50 p-4 text-left dark:border-red-900 dark:bg-red-950/50">
@@ -99,12 +101,13 @@ export function PageErrorFallback({ error, reset, returnUrl }: ErrorFallbackProp
             </Button>
           )}
           {returnUrl && (
-            <Button variant="outline" asChild>
-              <Link href={returnUrl} className="gap-2">
-                <ArrowLeft className="h-4 w-4" />
-                Go Back
-              </Link>
-            </Button>
+            <Link
+              href={returnUrl}
+              className="inline-flex items-center justify-center gap-2 h-10 px-4 py-2 rounded-lg text-sm font-medium border border-border bg-transparent hover:bg-surface-hover transition-all"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Go Back
+            </Link>
           )}
         </div>
       </div>
@@ -229,9 +232,12 @@ export function DataErrorFallback({
           </Button>
         )}
         {actionUrl && action !== 'retry' && (
-          <Button asChild>
-            <Link href={actionUrl}>{errorMessage.actionLabel}</Link>
-          </Button>
+          <Link
+            href={actionUrl}
+            className="inline-flex items-center justify-center h-10 px-4 py-2 rounded-lg text-sm font-medium bg-primary text-white hover:bg-primary-dark shadow-sm transition-all"
+          >
+            {errorMessage.actionLabel}
+          </Link>
         )}
       </div>
     </div>

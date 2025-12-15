@@ -60,9 +60,9 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
             <ImageIcon className="h-12 w-12 text-foreground-tertiary" />
           </div>
         )}
-        {project.status === "published" && project.youtube_url && (
+        {project.status === "published" && project.youtube_video_id && (
           <a
-            href={project.youtube_url}
+            href={`https://www.youtube.com/watch?v=${project.youtube_video_id}`}
             target="_blank"
             rel="noopener noreferrer"
             className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity"
