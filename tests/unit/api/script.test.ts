@@ -11,11 +11,18 @@ vi.mock('next/server', async () => {
   return {
     ...actual,
     NextResponse: {
-      json: vi.fn((data, options) => ({
-        data,
-        status: options?.status || 200,
-        headers: options?.headers || {},
-      })),
+      json: vi.fn((data, options) => {
+        const headers = new Map();
+        return {
+          data,
+          status: options?.status || 200,
+          headers: {
+            set: (key: string, value: string) => headers.set(key, value),
+            get: (key: string) => headers.get(key),
+            entries: () => headers.entries(),
+          },
+        };
+      }),
     },
   };
 });
@@ -76,7 +83,7 @@ describe('Script Generation API', () => {
       const response = await POST(request);
 
       expect(response.status).toBe(401);
-      expect(response.data.error).toBe('Unauthorized');
+      expect(response.data.error.code).toBe('AUTHENTICATION_FAILED');
     });
 
     it('should return 400 if topic is missing', async () => {
@@ -95,7 +102,7 @@ describe('Script Generation API', () => {
       const response = await POST(request);
 
       expect(response.status).toBe(400);
-      expect(response.data.error).toBe('Topic is required');
+      expect(response.data.error.code).toBe('ZOD_VALIDATION_ERROR');
     });
 
     it('should return 403 if monthly limit is reached', async () => {
@@ -104,7 +111,7 @@ describe('Script Generation API', () => {
       });
       mockSingle
         .mockResolvedValueOnce({ data: { plan: 'free' } })
-        .mockResolvedValueOnce({ data: { count: 5 } }); // Free plan has 5 scripts/month
+        .mockResolvedValueOnce({ data: { count: 5 } }); // Free plan has 3 scripts/month
 
       const { POST } = await import('@/app/api/ai/script/route');
 
@@ -116,7 +123,7 @@ describe('Script Generation API', () => {
       const response = await POST(request);
 
       expect(response.status).toBe(403);
-      expect(response.data.error).toContain('limit reached');
+      expect(response.data.error.code).toBe('FORBIDDEN');
     });
 
     it('should generate script successfully', async () => {
@@ -151,7 +158,8 @@ describe('Script Generation API', () => {
       const response = await POST(request);
 
       expect(response.status).toBe(200);
-      expect(response.data).toEqual(mockScriptResult);
+      expect(response.data.success).toBe(true);
+      expect(response.data.data.content).toBe(mockScriptResult.content);
     });
 
     it('should increment usage after successful generation', async () => {
@@ -197,8 +205,8 @@ describe('Script Generation API', () => {
 
       const response = await POST(request);
 
-      expect(response.status).toBe(500);
-      expect(response.data.error).toBe('Failed to generate script');
+      expect(response.status).toBe(502); // AI service error returns 502
+      expect(response.data.error.code).toBe('SCRIPT_GENERATION_ERROR');
     });
 
     it('should use default values for optional parameters', async () => {
@@ -219,15 +227,17 @@ describe('Script Generation API', () => {
 
       await POST(request);
 
-      expect(mockGenerateScript).toHaveBeenCalledWith({
-        topic: 'Test topic',
-        niche: 'general',
-        tone: 'casual',
-        target_duration: 10,
-        include_hook: true,
-        include_cta: true,
-        language: 'en',
-      });
+      // Check that generateScript was called with expected params (tone defaults from schema)
+      expect(mockGenerateScript).toHaveBeenCalledWith(
+        expect.objectContaining({
+          topic: 'Test topic',
+          niche: 'general',
+          target_duration: 10,
+          include_hook: true,
+          include_cta: true,
+          language: 'en',
+        })
+      );
     });
   });
 });

@@ -1,7 +1,43 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+/**
+ * Add security headers to response
+ */
+function addSecurityHeaders(response: NextResponse): NextResponse {
+  // Prevent clickjacking
+  response.headers.set("X-Frame-Options", "DENY");
+
+  // Prevent MIME type sniffing
+  response.headers.set("X-Content-Type-Options", "nosniff");
+
+  // Enable XSS filtering
+  response.headers.set("X-XSS-Protection", "1; mode=block");
+
+  // Referrer policy
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+
+  // Permissions policy
+  response.headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+  );
+
+  return response;
+}
+
 export async function updateSession(request: NextRequest) {
+  // Skip authentication for public API routes
+  const publicApiPaths = ["/api/health", "/api/docs"];
+  const isPublicApi = publicApiPaths.some((path) =>
+    request.nextUrl.pathname.startsWith(path)
+  );
+
+  if (isPublicApi) {
+    const response = NextResponse.next({ request });
+    return addSecurityHeaders(response);
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   });
@@ -38,7 +74,17 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Protected routes
-  const protectedPaths = ["/dashboard", "/projects", "/scripts", "/thumbnails", "/editor", "/seo", "/analytics", "/settings"];
+  const protectedPaths = [
+    "/dashboard",
+    "/projects",
+    "/scripts",
+    "/thumbnails",
+    "/editor",
+    "/seo",
+    "/analytics",
+    "/settings",
+    "/onboarding",
+  ];
   const isProtectedPath = protectedPaths.some((path) =>
     request.nextUrl.pathname.startsWith(path)
   );
@@ -47,7 +93,8 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("redirect", request.nextUrl.pathname);
-    return NextResponse.redirect(url);
+    const redirectResponse = NextResponse.redirect(url);
+    return addSecurityHeaders(redirectResponse);
   }
 
   // Redirect authenticated users away from auth pages
@@ -59,7 +106,8 @@ export async function updateSession(request: NextRequest) {
   if (isAuthPath && user) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
-    return NextResponse.redirect(url);
+    const redirectResponse = NextResponse.redirect(url);
+    return addSecurityHeaders(redirectResponse);
   }
 
   // Check if user needs onboarding
@@ -73,9 +121,10 @@ export async function updateSession(request: NextRequest) {
     if (profile && !profile.onboarding_completed && !request.nextUrl.pathname.startsWith("/onboarding")) {
       const url = request.nextUrl.clone();
       url.pathname = "/onboarding";
-      return NextResponse.redirect(url);
+      const redirectResponse = NextResponse.redirect(url);
+      return addSecurityHeaders(redirectResponse);
     }
   }
 
-  return supabaseResponse;
+  return addSecurityHeaders(supabaseResponse);
 }

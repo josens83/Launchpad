@@ -355,6 +355,90 @@ export class ThumbnailGenerationError extends AIServiceError {
 }
 
 /**
+ * 제목 생성 에러
+ */
+export class TitleGenerationError extends AIServiceError {
+  constructor(message: string, options: ErrorOptions & { provider?: AIProvider } = {}) {
+    super(message, {
+      ...options,
+      code: options.code || 'TITLE_GENERATION_ERROR',
+      provider: options.provider || 'claude',
+      serviceType: 'title_generation',
+    });
+  }
+
+  /**
+   * 빈 응답
+   */
+  static emptyResponse(): TitleGenerationError {
+    return new TitleGenerationError(
+      'Title generation returned empty result. Please try again.',
+      {
+        code: 'TITLE_EMPTY_RESPONSE',
+        provider: 'claude',
+        retryable: true,
+      }
+    );
+  }
+
+  /**
+   * 형식 오류
+   */
+  static invalidFormat(reason?: string): TitleGenerationError {
+    return new TitleGenerationError(
+      reason || 'Generated titles have invalid format',
+      {
+        code: 'TITLE_INVALID_FORMAT',
+        provider: 'claude',
+        retryable: true,
+      }
+    );
+  }
+}
+
+/**
+ * 설명 생성 에러
+ */
+export class DescriptionGenerationError extends AIServiceError {
+  constructor(message: string, options: ErrorOptions & { provider?: AIProvider } = {}) {
+    super(message, {
+      ...options,
+      code: options.code || 'DESCRIPTION_GENERATION_ERROR',
+      provider: options.provider || 'claude',
+      serviceType: 'description_generation',
+    });
+  }
+
+  /**
+   * 빈 응답
+   */
+  static emptyResponse(): DescriptionGenerationError {
+    return new DescriptionGenerationError(
+      'Description generation returned empty result. Please try again.',
+      {
+        code: 'DESCRIPTION_EMPTY_RESPONSE',
+        provider: 'claude',
+        retryable: true,
+      }
+    );
+  }
+
+  /**
+   * 형식 오류
+   */
+  static invalidFormat(reason?: string): DescriptionGenerationError {
+    return new DescriptionGenerationError(
+      reason || 'Generated description has invalid format',
+      {
+        code: 'DESCRIPTION_INVALID_FORMAT',
+        provider: 'claude',
+        retryable: true,
+      }
+    );
+  }
+}
+
+/**
  * 트랜스크립션 에러
  */
 export class TranscriptionError extends AIServiceError {
