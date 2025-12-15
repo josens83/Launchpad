@@ -170,6 +170,10 @@ jobs:
         run: pnpm audit --audit-level=high
         continue-on-error: true
 
+      - name: Check license compliance
+        run: npx license-checker --production --failOn='GPL;AGPL;LGPL' --summary
+        continue-on-error: true
+
       - name: Run Snyk security scan
         uses: snyk/actions/node@master
         continue-on-error: true
