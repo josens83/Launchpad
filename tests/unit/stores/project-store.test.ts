@@ -21,7 +21,10 @@ const mockProject: Project = {
   user_id: 'user-1',
   title: 'Test Project',
   description: 'Test description',
-  status: 'draft',
+  status: 'idea',
+  scheduled_date: null,
+  youtube_video_id: null,
+  tags: null,
   created_at: '2024-01-01T00:00:00Z',
   updated_at: '2024-01-01T00:00:00Z',
   scripts: [],
@@ -33,16 +36,18 @@ const mockScript: Script = {
   id: 'script-1',
   project_id: 'project-1',
   content: 'Test script content',
+  word_count: 100,
+  estimated_duration: 60,
   version: 1,
-  is_final: false,
   created_at: '2024-01-01T00:00:00Z',
 };
 
 const mockThumbnail: Thumbnail = {
   id: 'thumbnail-1',
   project_id: 'project-1',
-  url: 'https://example.com/thumbnail.jpg',
+  image_url: 'https://example.com/thumbnail.jpg',
   prompt: 'Test prompt',
+  ctr_score: null,
   is_selected: false,
   created_at: '2024-01-01T00:00:00Z',
 };

@@ -5,14 +5,25 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { NextRequest } from 'next/server';
 
+// Define mock response type
+interface MockResponse<T = unknown> {
+  data: T;
+  status: number;
+  headers: {
+    set: (key: string, value: string) => void;
+    get: (key: string) => string | undefined;
+    entries: () => IterableIterator<[string, string]>;
+  };
+}
+
 // Mock Next.js server components
 vi.mock('next/server', async () => {
   const actual = await vi.importActual('next/server');
   return {
     ...actual,
     NextResponse: {
-      json: vi.fn((data, options) => {
-        const headers = new Map();
+      json: vi.fn(<T>(data: T, options?: { status?: number }): MockResponse<T> => {
+        const headers = new Map<string, string>();
         return {
           data,
           status: options?.status || 200,
@@ -80,7 +91,7 @@ describe('Script Generation API', () => {
         body: JSON.stringify({ topic: 'Test topic' }),
       });
 
-      const response = await POST(request);
+      const response = await POST(request) as unknown as MockResponse<{ error: { code: string } }>;
 
       expect(response.status).toBe(401);
       expect(response.data.error.code).toBe('AUTHENTICATION_FAILED');
@@ -99,7 +110,7 @@ describe('Script Generation API', () => {
         body: JSON.stringify({}),
       });
 
-      const response = await POST(request);
+      const response = await POST(request) as unknown as MockResponse<{ error: { code: string } }>;
 
       expect(response.status).toBe(400);
       expect(response.data.error.code).toBe('ZOD_VALIDATION_ERROR');
@@ -120,7 +131,7 @@ describe('Script Generation API', () => {
         body: JSON.stringify({ topic: 'Test topic' }),
       });
 
-      const response = await POST(request);
+      const response = await POST(request) as unknown as MockResponse<{ error: { code: string } }>;
 
       expect(response.status).toBe(403);
       expect(response.data.error.code).toBe('FORBIDDEN');
@@ -155,7 +166,7 @@ describe('Script Generation API', () => {
         }),
       });
 
-      const response = await POST(request);
+      const response = await POST(request) as unknown as MockResponse<{ success: boolean; data: { content: string } }>;
 
       expect(response.status).toBe(200);
       expect(response.data.success).toBe(true);
@@ -203,7 +214,7 @@ describe('Script Generation API', () => {
         body: JSON.stringify({ topic: 'Test topic' }),
       });
 
-      const response = await POST(request);
+      const response = await POST(request) as unknown as MockResponse<{ error: { code: string } }>;
 
       expect(response.status).toBe(502); // AI service error returns 502
       expect(response.data.error.code).toBe('SCRIPT_GENERATION_ERROR');

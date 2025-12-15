@@ -4,10 +4,17 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+// Define mock response type
+interface MockResponse<T> {
+  data: T;
+  status: number;
+  headers: Record<string, string>;
+}
+
 // Mock Next.js server components
 vi.mock('next/server', () => ({
   NextResponse: {
-    json: vi.fn((data, options) => ({
+    json: vi.fn(<T>(data: T, options?: { status?: number; headers?: Record<string, string> }): MockResponse<T> => ({
       data,
       status: options?.status || 200,
       headers: options?.headers || {},
@@ -60,7 +67,7 @@ describe('Health API Routes', () => {
       mockSupabaseSingle.mockResolvedValue({ data: {}, error: null });
 
       const { GET } = await import('@/app/api/health/route');
-      const response = await GET(createMockRequest());
+      const response = await GET(createMockRequest()) as unknown as MockResponse<{ status: string; timestamp: string }>;
 
       expect(response.data.status).toBe('healthy');
     });
@@ -69,7 +76,7 @@ describe('Health API Routes', () => {
       mockSupabaseSingle.mockResolvedValue({ data: {}, error: null });
 
       const { GET } = await import('@/app/api/health/route');
-      const response = await GET(createMockRequest());
+      const response = await GET(createMockRequest()) as unknown as MockResponse<{ status: string; timestamp: string }>;
 
       expect(response.data.timestamp).toBeDefined();
       expect(new Date(response.data.timestamp)).toBeInstanceOf(Date);
@@ -79,14 +86,14 @@ describe('Health API Routes', () => {
   describe('GET /api/health/live', () => {
     it('should return alive status', async () => {
       const { GET } = await import('@/app/api/health/live/route');
-      const response = await GET();
+      const response = await GET() as unknown as MockResponse<{ alive: boolean; timestamp: string; pid: number; memory: NodeJS.MemoryUsage }>;
 
       expect(response.data.alive).toBe(true);
     });
 
     it('should include process info', async () => {
       const { GET } = await import('@/app/api/health/live/route');
-      const response = await GET();
+      const response = await GET() as unknown as MockResponse<{ alive: boolean; timestamp: string; pid: number; memory: NodeJS.MemoryUsage }>;
 
       expect(response.data.pid).toBeDefined();
       expect(response.data.memory).toBeDefined();
@@ -94,7 +101,7 @@ describe('Health API Routes', () => {
 
     it('should include timestamp', async () => {
       const { GET } = await import('@/app/api/health/live/route');
-      const response = await GET();
+      const response = await GET() as unknown as MockResponse<{ alive: boolean; timestamp: string; pid: number; memory: NodeJS.MemoryUsage }>;
 
       expect(response.data.timestamp).toBeDefined();
     });
@@ -107,7 +114,7 @@ describe('Health API Routes', () => {
       });
 
       const { GET } = await import('@/app/api/health/ready/route');
-      const response = await GET();
+      const response = await GET() as unknown as MockResponse<{ ready: boolean }>;
 
       expect(response.data.ready).toBe(true);
     });
@@ -120,7 +127,7 @@ describe('Health API Routes', () => {
       // Re-import to get fresh module state
       vi.resetModules();
       const { GET } = await import('@/app/api/health/ready/route');
-      const response = await GET();
+      const response = await GET() as unknown as MockResponse<{ ready: boolean }>;
 
       expect(response.data.ready).toBe(false);
       expect(response.status).toBe(503);

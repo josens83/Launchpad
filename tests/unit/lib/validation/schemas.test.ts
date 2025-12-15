@@ -134,7 +134,7 @@ describe('Common Schemas', () => {
 
 describe('Script Generation Schema', () => {
   it('should accept valid input', () => {
-    const input: ScriptGenerationInput = {
+    const input = {
       topic: 'How to learn programming',
       tone: 'educational',
       target_duration: 10,
@@ -145,6 +145,10 @@ describe('Script Generation Schema', () => {
 
     const result = scriptGenerationSchema.safeParse(input);
     expect(result.success).toBe(true);
+    if (result.success) {
+      const data: ScriptGenerationInput = result.data;
+      expect(data.topic).toBe('How to learn programming');
+    }
   });
 
   it('should require topic', () => {
@@ -189,7 +193,7 @@ describe('Script Generation Schema', () => {
 
 describe('Thumbnail Generation Schema', () => {
   it('should accept valid input', () => {
-    const input: ThumbnailGenerationInput = {
+    const input = {
       prompt: 'A YouTube thumbnail with bold text',
       style: 'bold',
       size: '1280x720',
@@ -197,6 +201,10 @@ describe('Thumbnail Generation Schema', () => {
 
     const result = thumbnailGenerationSchema.safeParse(input);
     expect(result.success).toBe(true);
+    if (result.success) {
+      const data: ThumbnailGenerationInput = result.data;
+      expect(data.prompt).toBe('A YouTube thumbnail with bold text');
+    }
   });
 
   it('should require prompt', () => {
