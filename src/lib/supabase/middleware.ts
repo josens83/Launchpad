@@ -2,9 +2,57 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
+ * Generate Content Security Policy header
+ */
+function generateCSP(): string {
+  const directives = [
+    // Default: only allow same origin
+    "default-src 'self'",
+
+    // Scripts: self, inline (for Next.js), and external services
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://cdn.jsdelivr.net",
+
+    // Styles: self and inline (for styled-components/emotion)
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+
+    // Images: self, data URIs, and external
+    "img-src 'self' data: blob: https: http:",
+
+    // Fonts: self and Google Fonts
+    "font-src 'self' https://fonts.gstatic.com data:",
+
+    // Connect: API endpoints
+    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.openai.com https://*.sentry.io",
+
+    // Frames: Stripe
+    "frame-src 'self' https://js.stripe.com",
+
+    // Object: none
+    "object-src 'none'",
+
+    // Base URI: self
+    "base-uri 'self'",
+
+    // Form action: self
+    "form-action 'self'",
+
+    // Frame ancestors: none (prevent clickjacking)
+    "frame-ancestors 'none'",
+
+    // Upgrade insecure requests in production
+    ...(process.env.NODE_ENV === 'production' ? ["upgrade-insecure-requests"] : []),
+  ];
+
+  return directives.join("; ");
+}
+
+/**
  * Add security headers to response
  */
 function addSecurityHeaders(response: NextResponse): NextResponse {
+  // Content Security Policy
+  response.headers.set("Content-Security-Policy", generateCSP());
+
   // Prevent clickjacking
   response.headers.set("X-Frame-Options", "DENY");
 
@@ -16,6 +64,14 @@ function addSecurityHeaders(response: NextResponse): NextResponse {
 
   // Referrer policy
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+
+  // HSTS (Strict Transport Security)
+  if (process.env.NODE_ENV === 'production') {
+    response.headers.set(
+      "Strict-Transport-Security",
+      "max-age=31536000; includeSubDomains; preload"
+    );
+  }
 
   // Permissions policy
   response.headers.set(
